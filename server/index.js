@@ -10,10 +10,12 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Serve frontend (dist inside client folder)
+// Resolve paths
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const frontendPath = path.join(__dirname, "../client/dist");
+const frontendPath = path.join(__dirname, "../dist");
+
+// Serve frontend build
 app.use(express.static(frontendPath));
 
 // Example API route
@@ -21,7 +23,7 @@ app.get("/api/hello", (req, res) => {
   res.json({ message: "Hello from Backend!" });
 });
 
-// Catch-all route for SPA
+// Catch-all route for SPA (serves index.html)
 app.get("*", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
