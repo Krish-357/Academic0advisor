@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.py
+server/app/
+server/data/
+Dockerfile
+docker-compose.yml

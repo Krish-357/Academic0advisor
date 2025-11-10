@@ -1,0 +1,13 @@
+project_id = "gaplofcrhsaybfqxaxpu"
+
+[functions.academic-advisor]
+verify_jwt = true
+
+[functions.career-counselor]
+verify_jwt = true
+
+[functions.data-insights]
+verify_jwt = true
+
+[functions.chat-orchestrator]
+verify_jwt = true
