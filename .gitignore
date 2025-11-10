@@ -8,7 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+# dist folder must be included for Vercel
+# dist
 dist-ssr
 *.local
 
