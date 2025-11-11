@@ -1,34 +1,38 @@
-import express from "express";
-import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Resolve paths
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const frontendPath = path.join(__dirname, "../dist");
 
-// Serve frontend build
-app.use(express.static(frontendPath));
+export default async function handler(req, res) {
+  // API route
+  if (req.url.startsWith("/api/hello")) {
+    res.status(200).json({ message: "Hello from Backend!" });
+    return;
+  }
 
-// Example API route
-app.get("/api/hello", (req, res) => {
-  res.json({ message: "Hello from Backend!" });
-});
+  // Serve frontend files for SPA
+  let filePath = path.join(frontendPath, req.url === "/" ? "index.html" : req.url);
 
-// Catch-all route for SPA (serves index.html)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+  if (!fs.existsSync(filePath)) {
+    filePath = path.join(frontendPath, "index.html"); // fallback to index.html
+  }
 
-// Start server
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+  const fileContents = fs.readFileSync(filePath);
+  const ext = path.extname(filePath).toLowerCase();
 
-export default app;
+  const mimeTypes = {
+    ".html": "text/html",
+    ".js": "application/javascript",
+    ".css": "text/css",
+    ".json": "application/json",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".svg": "image/svg+xml",
+  };
+
+  res.setHeader("Content-Type", mimeTypes[ext] || "text/plain");
+  res.status(200).end(fileContents);
+}
